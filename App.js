@@ -13,7 +13,12 @@ export default function App() {
         <Text style={styles.cityName}>Seoul</Text>
       </View>
 
-      <ScrollView horizontal contentContainerStyle={styles.weather}>
+      <ScrollView
+        pagingEnabled //
+        horizontal
+        showsHorizontalScrollIndicator={false} //하단막대
+        //indicatorStyle="white" //아이폰만 가능한 인디케이터 색상변경 props
+        contentContainerStyle={styles.weather}>
         <View style={styles.day}>
           <Text style={styles.temp}>27</Text>
           <Text style={styles.description}>Sunny</Text>
@@ -50,7 +55,7 @@ const styles = StyleSheet.create({
   },
   city: {
     flex: 1,
-    backgroundColor: "blue",
+    // backgroundColor: "blue",
     justifyContent: "center",
     alignItems: "center",
   },
