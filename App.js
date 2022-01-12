@@ -8,11 +8,13 @@ import { StyleSheet, Text, View, ScrollView } from "react-native"; //스크롤�
 import { Dimensions } from 'react-native'; //치수
 
 const SECREEN_WIDTH = Dimensions.get('window').width;
-console.log(SECREEN_WIDTH); 
+console.log(SECREEN_WIDTH);
+const API_KEY = "784ab24ff2ed5d94d4288abed9e25d13";
 
 export default function App() {
   const [city, setCity] = useState("Loading...")
-  const [location, setLocation] = useState();
+  // const [location, setLocation] = useState();
+  const [days, setDays] = useState([]);
   const [ok, setOk] = useState(true);
 
   const getWeather = async() => {
@@ -29,6 +31,9 @@ export default function App() {
 
     setCity(location[0].city); // 내 도시
     //step 2 해당 위치를 API에 전송하고 날씨를 가져와야함
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=alerts&appid=${API_KEY}`)
+    const json = await response.json();
+    setDays(json.daily);
   }
 
   useEffect(() => {
