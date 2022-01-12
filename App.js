@@ -11,14 +11,32 @@ import {
   ActivityIndicator,
 } from "react-native"; //스크롤뷰
 import { Dimensions } from "react-native"; //치수
+import { Fontisto } from '@expo/vector-icons';
+
+
+
 
 const SECREEN_WIDTH = Dimensions.get("window").width;
 console.log(SECREEN_WIDTH);
 const API_KEY = "784ab24ff2ed5d94d4288abed9e25d13";
 
+
+const icons = {
+  "Clouds": "cloudy",
+  "Clear" : "day-sunny",
+  "Atmosphere" : "cloudy-gusts",
+  "Snow" : "snow",
+  "Rain" : "rains",
+  "Drizzle" : "rain",
+  "Thunderstorms" : "lightning",
+}
+
+
 export default function App() {
+
+  //state 3개
   const [city, setCity] = useState("Loading...");
-  // const [location, setLocation] = useState();
+  // const [location, setLocation] = useState(); //이건이제 필요없음
   const [days, setDays] = useState([]);
   const [ok, setOk] = useState(true);
 
@@ -38,8 +56,9 @@ export default function App() {
       { latitude, longitude },
       { useGoogleMaps: false }
     );
-
     setCity(location[0].city); // 내 도시
+
+
     //step 2 해당 위치를 API에 전송하고 날씨를 가져와야함
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=alerts&appid=${API_KEY}&units=metric `
@@ -48,9 +67,15 @@ export default function App() {
     setDays(json.daily);
   };
 
+
   useEffect(() => {
     getWeather();
   }, []);
+
+
+
+
+
   //컴포넌트가 마운트 되면 useEffect를 사용해서 getPermissions function을호출
   return (
     <View style={styles.container}>
@@ -76,8 +101,10 @@ export default function App() {
         ) : (
           days.map((day, index) => (
             <View key={index} style={styles.day}>
-              <Text style={styles.temp}>{parseFloat(day.temp.day).toFixed(1)}</Text>
-
+              <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%"}}>
+                <Text style={styles.temp}>{parseFloat(day.temp.day).toFixed(1)}</Text>
+                <Fontisto style={styles.icon} name={icons[day.weather[0].main]} size={24} color="white" />
+              </View>
               <Text style={styles.description}>{day.weather[0].main}</Text>
               <Text style={styles.tinyText}>{day.weather[0].description}</Text>
             </View>
@@ -87,6 +114,10 @@ export default function App() {
     </View>
   );
 }
+
+
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -100,6 +131,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   cityName: {
+    color: "white",
     fontSize: 38,
     fontWeight: "700",
   },
@@ -114,14 +146,20 @@ const styles = StyleSheet.create({
     // backgroundColor: "teal",
   },
   temp: {
+    color: "white",
     marginTop: 50,
     fontSize: 98,
   },
   description: {
-    marginTop: -30,
+    color: "white",
+    marginTop: -10,
     fontSize: 50,
   },
   tinyText: {
+    color: "white",
     fontSize: 30,
+  },
+  icon: {
+    fontSize: 50,
   }
 });
