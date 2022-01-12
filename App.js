@@ -1,3 +1,7 @@
+
+import React, { useState, useEffect } from 'react';
+import { getPermissionsAsync } from "expo-location";
+import * as Location from 'expo-location';
 import { StatusBar } from "expo-status-bar";
 import reactDom from "react-dom";
 import { StyleSheet, Text, View, ScrollView } from "react-native"; //스크롤뷰
@@ -7,10 +11,34 @@ const SECREEN_WIDTH = Dimensions.get('window').width;
 console.log(SECREEN_WIDTH); 
 
 export default function App() {
+  const [city, setCity] = useState("Loading...")
+  const [location, setLocation] = useState();
+  const [ok, setOk] = useState(true);
+
+  const getWeather = async() => {
+    const { granted } = await Location.requestForegroundPermissionsAsync();
+
+    //step 1 사용자 권한 받기
+    if(!granted){
+      setOk(false);
+    }
+
+    const {coords: {latitude, longitude}} = await Location.getCurrentPositionAsync({accuracy:5})
+
+    const location = await Location.reverseGeocodeAsync({latitude, longitude}, {useGoogleMaps:false})
+
+    setCity(location[0].city); // 내 도시
+    //step 2 해당 위치를 API에 전송하고 날씨를 가져와야함
+  }
+
+  useEffect(() => {
+    getWeather();
+  }, [])
+  //컴포넌트가 마운트 되면 useEffect를 사용해서 getPermissions function을호출
   return (
     <View style={styles.container}>
       <View style={styles.city}>
-        <Text style={styles.cityName}>Seoul</Text>
+        <Text style={styles.cityName}>{city}</Text>
       </View>
 
       <ScrollView
